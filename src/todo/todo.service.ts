@@ -1,46 +1,33 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Todo, TodoDocument } from './schemas/todo.schema';
 import { CreateTodoDto } from './dto/create-todo.dto';
-import { UpdateTodoDto } from './dto/update-todo.dto';
-
-export interface Todo {
-  id: number;
-  title: string;
-  description?: string;
-}
 
 @Injectable()
 export class TodoService {
-  private todos: Todo[] = [];
-  private idCounter = 1;
+  constructor(
+    @InjectModel(Todo.name) private todoModel: Model<TodoDocument>,
+  ) {}
 
-  create(createTodoDto: CreateTodoDto): Todo {
-    const newTodo: Todo = {
-      id: this.idCounter++,
-      ...createTodoDto,
-    };
-    this.todos.push(newTodo);
-    return newTodo;
+  async create(createTodoDto: CreateTodoDto): Promise<Todo> {
+    const createdTodo = new this.todoModel(createTodoDto);
+    return createdTodo.save();
   }
 
-  update(id: number, updateTodoDto: UpdateTodoDto): Todo | undefined {
-    const todoIndex = this.todos.findIndex(todo => todo.id === id);
-    if (todoIndex === -1) return undefined;
-    this.todos[todoIndex] = { ...this.todos[todoIndex], ...updateTodoDto };
-    return this.todos[todoIndex];
+  async findAll(): Promise<Todo[]> {
+    return this.todoModel.find().exec();
   }
 
-  delete(id: number): boolean {
-    const todoIndex = this.todos.findIndex(todo => todo.id === id);
-    if (todoIndex === -1) return false;
-    this.todos.splice(todoIndex, 1);
-    return true;
+  async findOne(id: string): Promise<Todo | null> {
+    return this.todoModel.findById(id).exec();
   }
 
-  findAll(): Todo[] {
-    return this.todos;
+  async delete(id: string): Promise<Todo | null> {
+    return this.todoModel.findByIdAndDelete(id).exec();
   }
 
-  findOne(id: number): Todo | undefined {
-    return this.todos.find(todo => todo.id === id);
+  async update(id: string, todo: Todo): Promise<Todo | null> {
+    return this.todoModel.findByIdAndUpdate(id, todo, { new: true }).exec();
   }
 }

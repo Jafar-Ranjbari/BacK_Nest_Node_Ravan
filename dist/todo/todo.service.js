@@ -5,41 +5,42 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TodoService = void 0;
 const common_1 = require("@nestjs/common");
+const mongoose_1 = require("@nestjs/mongoose");
+const mongoose_2 = require("mongoose");
+const todo_schema_1 = require("./schemas/todo.schema");
 let TodoService = class TodoService {
-    constructor() {
-        this.todos = [];
-        this.idCounter = 1;
+    constructor(todoModel) {
+        this.todoModel = todoModel;
     }
-    create(createTodoDto) {
-        const newTodo = Object.assign({ id: this.idCounter++ }, createTodoDto);
-        this.todos.push(newTodo);
-        return newTodo;
+    async create(createTodoDto) {
+        const createdTodo = new this.todoModel(createTodoDto);
+        return createdTodo.save();
     }
-    update(id, updateTodoDto) {
-        const todoIndex = this.todos.findIndex(todo => todo.id === id);
-        if (todoIndex === -1)
-            return undefined;
-        this.todos[todoIndex] = Object.assign(Object.assign({}, this.todos[todoIndex]), updateTodoDto);
-        return this.todos[todoIndex];
+    async findAll() {
+        return this.todoModel.find().exec();
     }
-    delete(id) {
-        const todoIndex = this.todos.findIndex(todo => todo.id === id);
-        if (todoIndex === -1)
-            return false;
-        this.todos.splice(todoIndex, 1);
-        return true;
+    async findOne(id) {
+        return this.todoModel.findById(id).exec();
     }
-    findAll() {
-        return this.todos;
+    async delete(id) {
+        return this.todoModel.findByIdAndDelete(id).exec();
     }
-    findOne(id) {
-        return this.todos.find(todo => todo.id === id);
+    async update(id, todo) {
+        return this.todoModel.findByIdAndUpdate(id, todo, { new: true }).exec();
     }
 };
 TodoService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __param(0, (0, mongoose_1.InjectModel)(todo_schema_1.Todo.name)),
+    __metadata("design:paramtypes", [mongoose_2.Model])
 ], TodoService);
 exports.TodoService = TodoService;

@@ -1,34 +1,34 @@
-import { Controller, Post, Put, Delete, Get, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
-import { UpdateTodoDto } from './dto/update-todo.dto';
+import { Todo } from './schemas/todo.schema';
 
-@Controller('todos')
+@Controller('todo')
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
   @Post()
-  createTodo(@Body() createTodoDto: CreateTodoDto) {
+  create(@Body() createTodoDto: CreateTodoDto) {
     return this.todoService.create(createTodoDto);
   }
 
-  @Put(':id')
-  updateTodo(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
-    return this.todoService.update(Number(id), updateTodoDto);
-  }
-
-  @Delete(':id')
-  deleteTodo(@Param('id') id: string) {
-    return this.todoService.delete(Number(id));
+  @Get()
+  findAll() {
+    return this.todoService.findAll();
   }
 
   @Get(':id')
-  getTodo(@Param('id') id: string) {
-    return this.todoService.findOne(Number(id));
+  findOne(@Param('id') id: string) {
+    return this.todoService.findOne(id);
   }
 
-  @Get()
-  getAllTodos() {
-    return this.todoService.findAll();
+  @Delete(':id')
+  delete(@Param('id') id: string) {
+    return this.todoService.delete(id);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() todo: Todo) {
+    return this.todoService.update(id, todo);
   }
 }

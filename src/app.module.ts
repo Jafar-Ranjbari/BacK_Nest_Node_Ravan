@@ -1,15 +1,22 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config';
 import { TodoModule } from './todo/todo.module';
-import { AuthController } from './auth/auth.controller';
-import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { QuizModule } from './quiz/quiz.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/todo-app'), // آدرس دیتابیس خود را وارد کنید
-    TodoModule, UserModule, AuthModule,
+    ConfigModule.forRoot(),
+    MongooseModule.forRoot(process.env.MONGODB_URI!, {
+      // serverSelectionTimeoutMS: 5000,
+      // retryAttempts: 1, // Reduce retry attempts for faster failure feedback
+    }),
+    TodoModule,
+    UsersModule,
+    QuizModule,
   ],
-  controllers: [AuthController],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

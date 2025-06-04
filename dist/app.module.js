@@ -9,19 +9,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
+const config_1 = require("@nestjs/config");
 const todo_module_1 = require("./todo/todo.module");
-const auth_controller_1 = require("./auth/auth.controller");
-const user_module_1 = require("./user/user.module");
-const auth_module_1 = require("./auth/auth.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forRoot('mongodb://localhost/todo-app'),
-            todo_module_1.TodoModule, user_module_1.UserModule, auth_module_1.AuthModule,
+            config_1.ConfigModule.forRoot(),
+            mongoose_1.MongooseModule.forRoot(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/my_Ravan_Quiz', {
+                serverSelectionTimeoutMS: 5000,
+                retryAttempts: 1, // Reduce retry attempts for faster failure feedback
+            }),
+            todo_module_1.TodoModule,
         ],
-        controllers: [auth_controller_1.AuthController],
+        controllers: [],
+        providers: [],
     })
 ], AppModule);
 exports.AppModule = AppModule;

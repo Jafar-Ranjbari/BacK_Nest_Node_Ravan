@@ -16,25 +16,25 @@ exports.TodoController = void 0;
 const common_1 = require("@nestjs/common");
 const todo_service_1 = require("./todo.service");
 const create_todo_dto_1 = require("./dto/create-todo.dto");
-const update_todo_dto_1 = require("./dto/update-todo.dto");
+const todo_schema_1 = require("./schemas/todo.schema");
 let TodoController = class TodoController {
     constructor(todoService) {
         this.todoService = todoService;
     }
-    createTodo(createTodoDto) {
+    create(createTodoDto) {
         return this.todoService.create(createTodoDto);
     }
-    updateTodo(id, updateTodoDto) {
-        return this.todoService.update(Number(id), updateTodoDto);
-    }
-    deleteTodo(id) {
-        return this.todoService.delete(Number(id));
-    }
-    getTodo(id) {
-        return this.todoService.findOne(Number(id));
-    }
-    getAllTodos() {
+    findAll() {
         return this.todoService.findAll();
+    }
+    findOne(id) {
+        return this.todoService.findOne(id);
+    }
+    delete(id) {
+        return this.todoService.delete(id);
+    }
+    update(id, todo) {
+        return this.todoService.update(id, todo);
     }
 };
 __decorate([
@@ -43,37 +43,37 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_todo_dto_1.CreateTodoDto]),
     __metadata("design:returntype", void 0)
-], TodoController.prototype, "createTodo", null);
+], TodoController.prototype, "create", null);
 __decorate([
-    (0, common_1.Put)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
+    (0, common_1.Get)(),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_todo_dto_1.UpdateTodoDto]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], TodoController.prototype, "updateTodo", null);
-__decorate([
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], TodoController.prototype, "deleteTodo", null);
+], TodoController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
-], TodoController.prototype, "getTodo", null);
+], TodoController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Get)(),
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
-], TodoController.prototype, "getAllTodos", null);
+], TodoController.prototype, "delete", null);
+__decorate([
+    (0, common_1.Put)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, todo_schema_1.Todo]),
+    __metadata("design:returntype", void 0)
+], TodoController.prototype, "update", null);
 TodoController = __decorate([
-    (0, common_1.Controller)('todos'),
+    (0, common_1.Controller)('todo'),
     __metadata("design:paramtypes", [todo_service_1.TodoService])
 ], TodoController);
 exports.TodoController = TodoController;

@@ -9,17 +9,25 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateTodoDto = void 0;
-const class_validator_1 = require("class-validator");
-class CreateTodoDto {
-}
+exports.TodoSchema = exports.Todo = void 0;
+const mongoose_1 = require("@nestjs/mongoose");
+let Todo = class Todo {
+};
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsString)(),
+    (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
-], CreateTodoDto.prototype, "title", void 0);
+], Todo.prototype, "title", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
+    (0, mongoose_1.Prop)({ required: false }) // Explicitly mark as not required
+    ,
     __metadata("design:type", String)
-], CreateTodoDto.prototype, "description", void 0);
-exports.CreateTodoDto = CreateTodoDto;
+], Todo.prototype, "description", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: false }),
+    __metadata("design:type", Boolean)
+], Todo.prototype, "completed", void 0);
+Todo = __decorate([
+    (0, mongoose_1.Schema)({ timestamps: true }) // Enable automatic createdAt and updatedAt
+], Todo);
+exports.Todo = Todo;
+exports.TodoSchema = mongoose_1.SchemaFactory.createForClass(Todo);
